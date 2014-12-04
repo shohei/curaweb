@@ -1,5 +1,5 @@
-function png_path(input,error,diameter,offset,overwrap,intensity){
+function curaengine(input){
     var Module = { 
         input: input 
     };
-    arguments = ["dummy_input","dummy_output",error,diameter,offset,overwrap,intensity];
+    arguments = ["input","output"];

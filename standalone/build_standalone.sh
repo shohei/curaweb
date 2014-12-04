@@ -6,7 +6,6 @@
 # ar rsv libfabcore.a fab.o
 # emcc ${OPT} -I/usr/local/include -L/usr/local/lib -c png_path.c
 # emcc ${OPT} png_path.o libfabcore.a libpng.a libgif.a libz.a -o png_path.raw.js --pre-js pre.js
-rm curaengine.js curaengine.raw.js curaengine.raw.js.mem
 emmake make
-cat js/header.js curaengine.raw.js js/footer.js > curaengine.js 
+# cat js/header.js curaengine.raw.js js/footer.js > curaengine.js 
 # cp png_path.js png_path.raw.js.mem ../

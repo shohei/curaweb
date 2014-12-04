@@ -2,14 +2,9 @@
 # Makefile for CuraEngine
 #
 
-DEBUG = 2
-#0: build as c program
-#1: build as standalone server program(node.js)
-#2: build as client side javascript
-
-BUILD_DIR = build
-SRC_DIR = src
-LIBS_DIR = libs
+BUILD_DIR = ../build
+SRC_DIR = ../src
+LIBS_DIR = ../libs
 
 BUILD_TYPE = RELEASE
 
@@ -73,16 +68,6 @@ else
 	endif
 endif
 
-ifeq ($(DEBUG),0)
-	MKEXE = $(CXX) $(OBJECTS)  $(LDFLAGS)
-endif
-ifeq ($(DEBUG),1)
-	MKEXE = $(CXX) $(OBJECTS) $(EXEFLAGS) $(LDFLAGS) --embed-file input
-endif
-ifeq ($(DEBUG),2)
-	MKEXE = $(CXX) $(OBJECTS) $(EXEFLAGS) $(LDFLAGS) -o curaengine.raw.js --pre-js js/pre.js 
-endif
-
 all: $(DIRS) $(SOURCES) $(EXECUTABLE)
 
 $(BUILD_DIR)/libclipper.a: $(LIBS_DIR)/clipper/clipper.cpp
@@ -90,7 +75,9 @@ $(BUILD_DIR)/libclipper.a: $(LIBS_DIR)/clipper/clipper.cpp
 	ar rsv $(BUILD_DIR)/libclipper.a $(LIBS_DIR)/clipper/clipper.o
 
 $(EXECUTABLE): $(OBJECTS) $(BUILD_DIR)/libclipper.a
-	$(MKEXE)
+	$(CXX) $(OBJECTS) $(EXEFLAGS) $(LDFLAGS) --embed-file input
+	# $(CXX) $(OBJECTS) $(EXEFLAGS) $(LDFLAGS) -o curaengine.raw.js --pre-js js/pre.js 
+
 $(DIRS):
 	-@$(MKDIR_PREFIX) $(DIRS)
 

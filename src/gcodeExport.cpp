@@ -34,10 +34,25 @@ GCodeExport::GCodeExport()
     f = stdout;
 }
 
+void debugPrint(void){
+    char s[256];
+    // FILE *fp = fopen("output","w");
+    FILE *fp = fopen("output","r");
+    if(fp==NULL){
+        printf("file open error\n"); 
+        exit(-1);
+    }
+    while(fgets(s,256,fp)!=NULL){
+        printf("%s",s);
+    }
+    fclose(fp);
+}
+
 GCodeExport::~GCodeExport()
 {
     if (f && f != stdout)
         fclose(f);
+    // debugPrint();
 }
 
 void GCodeExport::replaceTagInStart(const char* tag, const char* replaceValue)
@@ -93,6 +108,7 @@ int GCodeExport::getFlavor()
 void GCodeExport::setFilename(const char* filename)
 {
     f = fopen(filename, "w+");
+    // f = fopen("output", "w+");
 }
 
 bool GCodeExport::isOpened()
@@ -163,6 +179,7 @@ void GCodeExport::writeComment(const char* comment, ...)
     va_start(args, comment);
     fprintf(f, ";");
     vfprintf(f, comment, args);
+
     if (flavor == GCODE_FLAVOR_BFB)
         fprintf(f, "\r\n");
     else
@@ -388,6 +405,7 @@ void GCodeExport::tellFileSize() {
     }
 }
 
+
 void GCodeExport::finalize(int maxObjectHeight, int moveSpeed, const char* endCode)
 {
     writeFanCommand(0);
@@ -398,6 +416,7 @@ void GCodeExport::finalize(int maxObjectHeight, int moveSpeed, const char* endCo
     cura::log("Print time: %d\n", int(getTotalPrintTime()));
     cura::log("Filament: %d\n", int(getTotalFilamentUsed(0)));
     cura::log("Filament2: %d\n", int(getTotalFilamentUsed(1)));
+
     
     if (getFlavor() == GCODE_FLAVOR_ULTIGCODE)
     {

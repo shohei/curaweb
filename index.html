@@ -3,13 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Web slicer</title>
+    <script src="./curaengine.js"></script>
+    <script>
+        window.onload = function(){
+
+            var stlInput = document.getElementById('stl');
+            stlInput.addEventListener('change', function(e) {
+                var stl = e.target.files[0];
+                var reader = new FileReader;
+                reader.readAsArrayBuffer(stl);
+                reader.onload = function() {
+                    var res = curaengine(new Uint8Array(reader.result));
+                };
+            }, false);
+
+        };
+    </script>
+    <style>
+      .container{
+        margin:30px;
+      }
+    </style>
 </head>
 <body>
-    <p>Load STL</p>
-    <input type="file" id="stl">
+    <div class="container">
+        <h1>Cura Engine</h1>
+        <p>Load STL</p>
+        <input type="file" id="stl">
 
-    <p>make GCODE</p>
-    <disp></disp>
+        <p>make GCODE</p>
+        <p id="disp"></p>
+    </div>
 
 </body>
 </html>

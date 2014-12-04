@@ -2,7 +2,7 @@ Module['preRun'] = function(){
     FS.createDataFile(
         '/',
         'input',
-        Module['input'], //引数から入力できるようにするためのもの
+        Module['input'],
         true,
         true
     );
@@ -14,6 +14,6 @@ Module['preRun'] = function(){
         true
     );
     Module['ret'] = function(){
-        return FS.findObject("/output").contents; //最終的に返り値になる
+        return FS.findObject("/output").contents; 
     };
 };

@@ -85,11 +85,26 @@ public:
         return true;
     }
 
+    void debugPrint(void){
+        char s[256];
+        // FILE *fp = fopen("output","w");
+        FILE *fp = fopen("output","r");
+        if(fp==NULL){
+            printf("file open error\n"); 
+            exit(-1);
+        }
+        while(fgets(s,256,fp)!=NULL){
+            printf("%s",s);
+        }
+        fclose(fp);
+    }
+
     void finalize()
     {
         if (!gcode.isOpened())
             return;
         gcode.finalize(maxObjectHeight, config.moveSpeed, config.endCode.c_str());
+        // debugPrint();
     }
 
 private:
