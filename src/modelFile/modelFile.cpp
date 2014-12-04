@@ -25,6 +25,7 @@ void* fgets_(char* ptr, size_t len, FILE* f)
     return nullptr;
 }
 
+
 SimpleModel* loadModelSTL_ascii(SimpleModel *m,const char* filename, FMatrix3x3& matrix)
 {
     m->volumes.push_back(SimpleVolume());
@@ -116,12 +117,17 @@ SimpleModel* loadModelSTL_binary(SimpleModel *m,const char* filename, FMatrix3x3
 SimpleModel* loadModelSTL(SimpleModel *m,const char* filename, FMatrix3x3& matrix)
 {
     FILE* f = fopen(filename, "r");
+
     char buffer[6];
-    if (f == nullptr)
+    if (f == nullptr){
+        printf("file %s open failed\n",filename);    
         return nullptr;
+    }
 
     if (fread(buffer, 5, 1, f) != 1)
     {
+        printf("buffer is weird.\n");    
+        printf("%s\n",buffer);
         fclose(f);
         return nullptr;
     }
@@ -131,8 +137,10 @@ SimpleModel* loadModelSTL(SimpleModel *m,const char* filename, FMatrix3x3& matri
     if (stringcasecompare(buffer, "solid") == 0)
     {
         SimpleModel* asciiModel = loadModelSTL_ascii(m, filename, matrix);
-        if (!asciiModel)
+        if (!asciiModel){
+            printf("Not an ascii model.\n");    
             return nullptr;
+        }
 
         // This logic is used to handle the case where the file starts with
         // "solid" but is a binary file.
@@ -148,40 +156,40 @@ SimpleModel* loadModelSTL(SimpleModel *m,const char* filename, FMatrix3x3& matri
 
 SimpleModel* loadModelFromFile(SimpleModel *m,const char* filename, FMatrix3x3& matrix)
 {
-    const char* ext = strrchr(filename, '.');
-    if (ext && stringcasecompare(ext, ".stl") == 0)
-    {
-        return loadModelSTL(m,filename, matrix);
-    }
-    if (filename[0] == '#' && binaryMeshBlob != nullptr)
-    {
-        while(*filename == '#')
-        {
-            filename++;
-
-            m->volumes.push_back(SimpleVolume());
-            SimpleVolume* vol = &m->volumes[m->volumes.size()-1];
-            int32_t n, pNr = 0;
-            if (fread(&n, 1, sizeof(int32_t), binaryMeshBlob) < 1)
-                return nullptr;
-            cura::log("Reading mesh from binary blob with %i vertexes\n", n);
-            Point3 v[3];
-            while(n)
-            {
-                float f[3];
-                if (fread(f, 3, sizeof(float), binaryMeshBlob) < 1)
-                    return nullptr;
-                FPoint3 fp(f[0], f[1], f[2]);
-                v[pNr++] = matrix.apply(fp);
-                if (pNr == 3)
-                {
-                    vol->addFace(v[0], v[1], v[2]);
-                    pNr = 0;
-                }
-                n--;
-            }
-        }
-        return m;
-    }
-    return nullptr;
+    // const char* ext = strrchr(filename, '.');
+    // if (ext && stringcasecompare(ext, ".stl") == 0)
+    // {
+    return loadModelSTL(m,filename, matrix);
+    // }
+    // if (filename[0] == '#' && binaryMeshBlob != nullptr)
+    // {
+    //     while(*filename == '#')
+    //     {
+    //         filename++;
+    //
+    //         m->volumes.push_back(SimpleVolume());
+    //         SimpleVolume* vol = &m->volumes[m->volumes.size()-1];
+    //         int32_t n, pNr = 0;
+    //         if (fread(&n, 1, sizeof(int32_t), binaryMeshBlob) < 1)
+    //             return nullptr;
+    //         cura::log("Reading mesh from binary blob with %i vertexes\n", n);
+    //         Point3 v[3];
+    //         while(n)
+    //         {
+    //             float f[3];
+    //             if (fread(f, 3, sizeof(float), binaryMeshBlob) < 1)
+    //                 return nullptr;
+    //             FPoint3 fp(f[0], f[1], f[2]);
+    //             v[pNr++] = matrix.apply(fp);
+    //             if (pNr == 3)
+    //             {
+    //                 vol->addFace(v[0], v[1], v[2]);
+    //                 pNr = 0;
+    //             }
+    //             n--;
+    //         }
+    //     }
+    //     return m;
+    // }
+    // return nullptr;
 }

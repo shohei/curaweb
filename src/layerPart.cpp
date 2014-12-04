@@ -63,6 +63,7 @@ void createLayerParts(SliceVolumeStorage& storage, Slicer* slicer, int unionAllT
 void dumpLayerparts(SliceDataStorage& storage, const char* filename)
 {
     FILE* out = fopen(filename, "w");
+    // FILE* out = fopen("output", "w");
     fprintf(out, "<!DOCTYPE html><html><body>");
     Point3 modelSize = storage.modelSize;
     Point3 modelMin = storage.modelMin;
